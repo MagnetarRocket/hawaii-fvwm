@@ -1,0 +1,443 @@
+#
+# ~/.fvwmrc - configuration for the feeble virtual window manager
+#             Customized for CFHT by Sidik Isani <isani@cfht.hawaii.edu>
+#
+#  This file should be installed as .fvwmrc in your home directory.  It
+#  allows you to customize the look-and-feel of fvwm.  The colors, fonts,
+#  and behavior of the window manager, as described in the "man page" for
+#  fvwm are all controlled by this file.  Colors, fonts, and behaviors of
+#  APPLICATIONS are NOT controlled here (use .Xdefaults for applications).
+#  This configuration file only controls appearance of the window frames,
+#  icons, menus, desktop, and desktop toolbars.
+#
+#  After making changes in this file, save it and select "restart" from
+#  the window manager root menu (click left mouse button anywhere on desktop.)
+#
+#  Note: You can't forward-reference things in this file.  Order matters!
+
+# Modifcations to fvwm2x by MagnetarRocket @github.com
+
+# -------------------------- Paths and Icons -----------------------------
+#
+#  Colon-separated lists of directories.  Add to PixmapPath if you have
+#  icons in your home directory that you want fvwm to use.
+
+# Ajust as per system needs
+
+ModulePath          /usr/local/bin/:m4_FVWMDIR/:m4_HOME/bin/
+PixmapPath          /usr/wm/common/pixmaps/
+IconPath            /usr/wm/common/bitmaps/
+
+#  match up host names and applications with appropriate icons
+
+m4_include(`/usr/wm/common/system.fvwmrc.icons')
+## m4_include(`/usr/wm/common/system.fvwmrc.icons.hosts')
+
+#  add/override with your own icons here.  Format is:
+#    Icon "window title" picture.xpm
+#  Warning: random pixmaps that didn't come from /usr/wm/common/pixmaps/
+#           can result in wasted colors and colormap problems!
+
+Style	"xconsole"	icon	    monitor.xpm
+
+#
+# -------------------------------- Styles -------------------------------
+#
+
+#  set the default border width and other styles for windows here:
+
+m4_ifelse(m4_env(SSO_STATUSONLY),`',`
+Style "*"	   BorderWidth 6, HandleWidth 6',`
+#
+# Or, if STATUSONLY is set, get rid of all window decorations; They are useless
+#
+Style "*"	BorderWidth 4, HandleWidth 4, NoHandles, NoButton 1, NoButton 2, NoButton 4')
+
+#  include some default styles, if you want them (otherwise comment out)
+
+m4_include(`/usr/wm/common/system.fvwmrc.styles')
+
+#  set other special behavior by-application here:
+#   Style "Example"  Stick, NoTitle, StaysOnTop, WindowListSkip, NoHandles
+Style "*Banner"	   NoTitle, NoHandles, Sticky, WindowListSkip, StaysOnTop
+Style "acontrol"   NoTitle, NoHandles, Sticky, WindowListSkip
+Style "xbiff"      NoTitle, NoHandles, Sticky, WindowListSkip
+
+#
+# ----------------------------- Colors ---------------------------------
+#
+#  Colors can be "#rrrrggggbbbb" "#rrggbb" or "Colorname", like "Blue"
+#  as long as there is a line for it in /usr/lib/X11/rgb.txt
+#  (or /usr/openwin/lib/rgb.txt on the suns.)
+
+m4_ifelse(m4_env(SSO_COLORS),`',`
+Style * HiForeColor 		#0000ffffffff
+Style * HiBackColor 		#00002222bbbb
+Style * StdForeColor 		#ffffffffffff
+Style * StdBackColor 		#606070709090
+Style * StickyForeColor		#ffffffffffff
+Style * StickyBackColor		#00008b8b8b8b
+Style * MenuBackColor		#00002222bbbb
+Style * MenuForeColor		#0000ffffffff
+Style * MenuStippleColor	#bbbbbbbbc8c8
+*FvwmPagerBack		#5e5e5e5e6464
+*FvwmPagerFore		#000000000000
+*FvwmPagerHilight	#00008b8b8b8b
+*IOStuffBack		#606070709090
+*IOStuffFore		#ffffffffffff
+*GoodStuffBack		#bbbbbbbbc8c8
+*GoodStuffFore		#000000000000',`
+m4_include(`/usr/wm/common/system.fvwmrc.colors.'m4_env(SSO_COLORS))')
+
+XORvalue		131511
+
+#
+# ------------------------------- Fonts --------------------------------
+#
+#  use the xfontsel program to see which fonts are available
+
+Font                    -adobe-helvetica-medium-r-*-*-*-100-*-*-*-*-*-*
+WindowFont              -adobe-helvetica-medium-r-*-*-*-100-*-*-*-*-*-*
+*FvwmPagerFont		-adobe-helvetica-bold-r-*-*-*-100-*-*-*-*-*-*
+*FvwmPagerSmallFont	-adobe-helvetica-medium-r-*-*-*-80-*-*-*-*-*-*
+*IOStuffFont		-adobe-helvetica-medium-r-*-*-*-80-*-*-*-*-*-*
+*GoodStuffFont		-adobe-helvetica-medium-r-*-*-*-80-*-*-*-*-*-*
+
+#
+# ----------------------- Placement & Geometries --------------------------
+#
+
+#  see man pages for info on what the following do
+SmartPlacement
+RandomPlacement
+StickyIcons
+
+
+IconBox -65 0 -1 -80
+IconBox 0 1 64 -80
+IconBox 64 -128 -64 -64
+m4_ifelse(m4_WIDTH,640,`
+*IOStuffGeometry 640x66+0+415',`
+m4_ifelse(m4_WIDTH,800,`
+*IOStuffGeometry 800x60+0+540',`
+m4_ifelse(m4_WIDTH,1024,`
+*IOStuffGeometry 1024x60+0-1',`
+*IOStuffGeometry +1-1')')')
+*IOStuffRows 1
+*GoodStuffGeometry +1+1
+*GoodStuffRows 1
+# See also: placement of pager, below.
+
+#
+# ----------------------- Virtual Pager Stuff --------------------------
+#
+
+# Where to place pager (-1-1 means lower right corner of screen)
+#
+*FvwmPagerGeometry -1-1
+#
+m4_ifelse(m4_env(SSO_PAGER),`',`
+#
+# Set the size of your virtual desktop here, and if you are not using SSO_PAGER
+#
+m4_ifelse(m4_env(SSO_TOOLBAR_PAGER2),`y',`
+DeskTopSize 2x1',`
+DeskTopSize 4x1')
+
+#
+# If SSO_PAGER is defined, use this instead to set size.  If it is zero, set
+# the pager size to 1x1 and leave the possibility enable desktops later instead
+# (Desktops provide a different, but functionally similar thing.)
+#
+',m4_ifelse(m4_env(SSO_PAGER),`0',`
+DeskTopSize 1x1
+*FvwmPagerColumns 1',`
+DeskTopSize 1x'm4_env(SSO_PAGER)))
+# The stuff on the pager will be 1/25 the full size.
+DeskTopScale 24
+
+# User overrides for styles and colors can go in the home directory:
+m4_sinclude(m4_HOME/`.fvwm-include')
+
+#
+# ----------------------- Menus and Functions ---------------------------
+#
+#  see the man pages and the examples in the files below if you need to
+#  write your own functions.  Some of the functions call the pop-ups,
+#  so the the functions should be included after them.
+
+m4_include(`/usr/wm/common/system.fvwmrc.menus')
+m4_include(`/usr/wm/common/system.fvwmrc.functions')
+
+# If you run the FvwmSaveDesk module, it creates the following dot file
+# NOTE: See below also.
+m4_sinclude(m4_HOME/`.fvwmdesk')
+
+# User overrides for styles and colors can go in the home directory:
+m4_sinclude(m4_HOME/`.fvwminclude')
+
+
+#  This function gets called when you first log in.  You can use it to start
+#  up some xterms or whatever you like.  See man page for examples.
+
+Function "InitFunction"
+	# Dont allow "pushing" on the edge of the desktop to allow flipping to
+	# a new page unless the user explicitly turns it on with the menu.
+	TogglePage "I"
+	#
+	# If this is a status-only display, move the mouse cursor to the
+	# lower left corner of the screen to hide it as much as possible.
+	# Presumably there is not even a mouse connected, but it doesn't seem
+	# possible to get rid of the pointer completely.
+	#
+m4_ifelse(m4_env(SSO_STATUSONLY),`',`',`
+	CursorMove "I" 100 100')
+m4_ifelse(m4_WIDTH,640,`
+	Exec	"I"	xrdb -nocpp -retain -merge /usr/wm/common/fvwm.Xdefaults.640x480')
+m4_ifelse(m4_WIDTH,800,`
+	Exec	"I"	xrdb -nocpp -retain -merge /usr/wm/common/fvwm.Xdefaults.800x600')
+	# Don't display background image for colormapped displays.
+m4_ifelse(m4_CLASS,PseudoColor,`',`
+m4_ifelse(m4_WIDTH,800,`
+	Exec    "I"     exec xpmroot /usr/wm/common/backgrounds/gowild.xpm',`
+	Exec	"I"	exec xv -root -quit -max /usr/wm/common/backgrounds-hires/Hawaii.jpg')')
+	#
+	# Here's a hook that allows you to spawn a script from the standard
+	# FVWM InitFunction without having to make a custom ~/.fvwmrc.  It
+	# has no effect if you don't have an executable ~/.fvwm-initfunction
+	#
+	Exec "I" exec sh -c "if [ -x m4_HOME/.fvwm-initfunction ]; then exec m4_HOME/.fvwm-initfunction; fi"
+	# In order to allow the FvwmSaveDesk to work (which it doesnt do very
+	# well anyway) youll have to uncomment this line.  Then everytime you
+	# click Desktop->FVWM Modules->Save Desktop, a new StartupFunction will
+	# be created that gets read every time you log in.  It can be used to
+	# open a few terminal windows, elm, etc. on login.  Works with XEmacs,
+	# but doesnt re-open files you have open.  Doesnt work with Netscape.
+	m4_ifelse(m4_env(SSO_SAVEDESK),`',`',`Function	"I" StartupFunction')
+	# I use it get rid of my CAPs lock key and make both caps lock and
+	# control send control.  (Some programs like emacs complain, but it
+	# works on most terminals.)
+#	Exec	"I"	exec xmodmap -e 'remove Lock = Caps_Lock' -e 'clear Lock' -e 'add Control = Caps_Lock'
+	# More examples of stuff you could start up here...
+#	Module  "I"     FvwmBanner
+#	Exec    "I"     exec xterm -geometry 80x64+0+0
+#	Wait    "I"     xterm
+#	Desk    "I"     0 2
+#	Exec    "I"     exec xterm
+#	Wait    "I"     xterm
+#	Desk    "I"     0 0
+EndFunction
+
+#  And this one gets called when you "restart/refresh".
+ 
+Function "RestartFunction"
+	Exec	"I"	xlock-kill >& /dev/null
+        Exec    "I"     killall -9 netscape-4.08 >& /dev/null
+#       Exec    "I"     killall -9 xosview.real >& /dev/null
+	TogglePage "I"
+	Refresh "I"
+#       Exec    "I"     xsetroot -solid "#606070709090"
+EndFunction
+
+#  This is the menu you get when you click on the background
+
+AddToMenu "Root Menu"
++	Title 	"Root Menu"
++	Exec    "Terminal"	exec myterm
++	Exec	"Virtual keyboard" exec xvkbd
++	Exec	"Audio Mixer"   exec xmmix
+#	Popup	"Hosts"		CFHT_Hosts
++	Popup   "Applications"  CFHT_Applications
++	Popup	"Utilities"	CFHT_Utilities
+#	Popup	"Utilities (Sun)"	CFHT_Utilities_sun
++	Popup	"Window Ops"	CFHT_Window Ops2
++	Popup	"Desktop"	CFHT_Desktop
+# m4_ifelse(m4_env(SSO_PEGASUS),`',`',`
+#         Popup   "Print"         CFHT_Print
+        Popup   "Session Setup" Pegasus_Setup')
+        Popup   "Exit" 	    	CFHT_Quit-Verify
+        Exec    "Sidious reconfig" exec rxvt +sb -T reconfig -n reconfig -e su --command="reconfig" root
+EndPopup
+
+#
+# ------------------------------ Tool Bar(s) --------------------------
+#
+
+m4_ifelse(m4_env(SSO_TOOLBAR),`y',`
+#
+# Buttons selected in "reconfig"
+#
+
+m4_ifelse(m4_env(SSO_TOOLBAR_RECONFIG),`y',`
+*IOStuff Reconfig interface.xpm Exec "reconfig" exec rxvt +sb -T reconfig -n reconfig -e su --command="reconfig" root')
+m4_ifelse(m4_env(SSO_TOOLBAR_TERMINAL),`y',`
+*IOStuff Terminal Monitor.xpm Exec "myterm" exec myterm')
+m4_ifelse(m4_env(SSO_TOOLBAR_CALCULATOR),`y',`
+m4_ex(`/usr/local/bin/x48',`
+*IOStuff Calculator OldBlueAddingMachine.xpm Exec "x48" exec x48',`
+*IOStuff Calculator OldBlueAddingMachine.xpm Exec "xcalc" exec xcalc')')
+m4_ifelse(m4_env(SSO_TOOLBAR_VIEWER),`y',`
+*IOStuff Viewer xv.xpm Exec "xv" exec xv -24')
+m4_ifelse(m4_env(SSO_TOOLBAR_XFIG),`y',`
+*IOStuff XFig paint3.xpm Exec "xfig" exec xfig m4_ifelse(m4_WIDTH,800,`-but_per_row 2 -geometry 800x590+-5+-7',`')')
+m4_ifelse(m4_env(SSO_TOOLBAR_GIMP),`y',`
+*IOStuff Gimp gimp.xpm Exec "gimp" exec gimp')
+m4_ifelse(m4_env(SSO_TOOLBAR_ASMODEM),`y',`
+*IOStuff Modem - Swallow "asmodem" asmodem -m /var/run/ppp0.pid -s -d "ppp toggle" -h "ppp toggle" -r "beep 8000"')
+m4_ifelse(m4_env(SSO_TOOLBAR_MODEM),`y',`
+*IOStuff Modem modem.xpm Exec "" exec ppp toggle')
+m4_ifelse(m4_env(SSO_TOOLBAR_DILLO),`y',`
+*IOStuff Dillo dillo.xpm Exec "Dillo" exec dillo')
+m4_ifelse(m4_env(SSO_TOOLBAR_NETSCAPE),`y',`
+*IOStuff Web WWW.xpm Exec "" exec netscape')
+m4_ifelse(m4_env(SSO_TOOLBAR_SKYPE),`y',`
+*IOStuff Skype MicroPhonePro.xpm Exec "skype" exec skype')
+m4_ifelse(m4_env(SSO_TOOLBAR_CLOCK),`y',`
+*IOStuff - - Swallow "asclock" . /var/sidious.settings ; asclock -led "#9090eeee9090" -exe /usr/bin/plan -12 -shape -position -1-1 &')
+m4_ifelse(m4_env(SSO_TOOLBAR_XOSVIEW),`y',`
+*IOStuff(3x1) - xosview Swallow "xosview" xosview')
+m4_ifelse(m4_env(SSO_TOOLBAR_MOVIE),`y',`
+*IOStuff Movie TapeOnMeshNetting.xpm Exec "MPlayer" exec aviplay')
+m4_ifelse(m4_env(SSO_TOOLBAR_MUSIC),`y',`
+*IOStuff Music ColoredCompactDisc.xpm Exec "xmms" exec xmms')
+m4_ifelse(m4_env(SSO_TOOLBAR_TKDESK),`y',`
+*IOStuff TkDesk  FileFolders.xpm  Exec "dsk_FileViewer" exec tkdesk')
+m4_ifelse(m4_env(SSO_TOOLBAR_PAGER2),`y',`
+*IOStuff(2x1) - Pager SwallowModule "FvwmPager" FvwmPager 0 0')
+m4_ifelse(m4_env(SSO_TOOLBAR_PAGER),`y',`
+*IOStuff(4x1) - Pager SwallowModule "FvwmPager" FvwmPager 0 0')
+m4_ifelse(m4_env(SSO_TOOLBAR_EXIT),`y',`
+*IOStuff Exit/Lock KeysOnChain.xpm Popup "CFHT_Quit-Verify" CFHT_Quit-Verify')
+m4_ifelse(m4_env(SSO_TOOLBAR_POWEROFF),`y',`
+*IOStuff PowerOff shutdown.xpm Exec "" exec /sbin/halt')
+',`
+
+#
+# Buttons NOT set in "reconfig"
+#
+
+#*IOStuff Mailbox  -               Swallow "xbiff" xbiff -bg "#bbbbbbbbc8c8" -geometry -1-1 &
+#*IOStuff XLoad    -               Swallow "xload" xload -nolabel -hl "#00008b8b8b8b" -fg "#000000000000" -bg "#5e5e5e5e6464" -geometry 48x48-1-1 &
+#ex(`/usr/X11R6/bin/vncviewer',`
+#*IOStuff VncViewer ModeledHeadInClouds.xpm Exec "Vncviewer" exec vncviewer',`
+#*IOStuff Editor   text.xpm        Exec "Emacs" exec xemacs')
+*IOStuff Reconfig interface.xpm    Exec "reconfig" exec rxvt +sb -T reconfig -n reconfig -e su --command="reconfig" root
+*IOStuff Terminal Monitor.xpm     Exec "myterm" exec myterm
+m4_ifelse(m4_WIDTH,640,`',`
+m4_ex(`/usr/local/bin/x48',`
+*IOStuff Calculator OldBlueAddingMachine.xpm Exec "x48" exec x48',`
+*IOStuff Calculator OldBlueAddingMachine.xpm Exec "xcalc" exec xcalc')
+*IOStuff Viewer   xv.xpm          Exec "xv" exec xv -24
+m4_ex(`/usr/X11R6/bin/xfig',`
+*IOStuff XFig     paint3.xpm	  Exec "xfig" exec xfig m4_ifelse(m4_WIDTH,800,`-but_per_row 2 -geometry 800x590+-5+-7',`')',`
+*IOStuff Dillo dillo.xpm Exec "Dillo" exec dillo')
+m4_ex(`/usr/X11R6/bin/netscape',`
+*IOStuff Web WWW.xpm   Exec "" exec netscape',`')')
+#*IOStuff Refresh recycler.xpm     Restart "Refresh" fvwm
+*IOStuff -        -               Swallow "asclock" . /var/sidious.settings ; asclock -led "#9090eeee9090" -exe /usr/bin/plan -12 -shape -position -1-1 &
+*IOStuff(3x1)  - xosview          Swallow "xosview" xosview
+m4_ifelse(m4_WIDTH,640,`
+#*IOStuff(5x1)  - xvkbd            Swallow "xvkbd" xvkbd',`
+m4_ifelse(m4_WIDTH,800,`',`
+#IOStuff GhostScript ps.xpm        Exec "Gv" exec gv
+*IOStuff Movie TapeOnMeshNetting.xpm Exec "MPlayer" exec aviplay
+*IOStuff Music ColoredCompactDisc.xpm Exec "xmms" exec xmms
+*IOStuff TkDesk  FileFolders.xpm  Exec "dsk_FileViewer" exec tkdesk
+')')
+#
+#  add your own applications to the IOStuff bar here
+#
+#*IOStuff ps    ps.xpm             Exec "ghostview" exec ghostview
+#*IOStuff frame word_processor.xpm Exec "FrameMaker" exec frame
+
+# Comment this out if you do not want the virtual desktop
+m4_ifelse(m4_env(SSO_PAGER),`0',`',`
+*IOStuff(4x1)  - Pager            SwallowModule "FvwmPager" FvwmPager 0 0')
+')
+
+#
+# ---------------------------- Module Startup -------------------------
+#
+
+*FvwmPagerLabel 0 Pager
+
+# Do not start any toolbars if SSO_STATUSONLY is defined.
+m4_ifelse(m4_env(SSO_STATUSONLY),`',`
+
+# Comment this out to leave out the button column in the top right
+Module IOStuff
+
+# Comment this out to leave out the button row in the top left
+#Module GoodStuff
+')
+
+#
+# ------------------------------- Misc ---------------------------------
+#
+#  see man page for fvwm for descriptions; backing store options may speed
+#  up performance on X-terminals, but it might use a lot of X-terminal
+#  memory too...
+
+DecorateTransients
+#AppsBackingStore
+#BackingStore
+#SaveUnders
+Cursor 6 94
+EdgeScroll 100 100
+EdgeResistance 10000 75
+# Uncomment this if you like having to click on a window to switch focus to it
+#ClickToFocus
+m4_ifelse(m4_env(SSO_FOCUS),`click',`ClickToFocus')
+SloppyFocus
+OpaqueMove 100
+NoPPosition
+ClickTime 150
+CirculateSkipIcons
+OpaqueMove 100
+m4_ifelse(m4_env(SSO_RAISE),`',`',`AutoRaise m4_env(SSO_RAISE)')
+# Uncomment this if you like windows to "auto-raise" themselves after 2 seconds
+#AutoRaise 2000
+MWMFunctionHints
+#MWMHintOverride
+MWMDecorHints
+MWMMenus
+MWMBorders
+# SLS2x1 is a CFHT modification.  It is not critical, but just helps deal
+# with the "crack" between the two monitors when they are treated as one large
+# display.  If screen width is equal to 2560, assume that we have 2 monitors.
+# Currently, hookele (TCS) is the only host with this type of display hardware.
+m4_ifelse(m4_WIDTH,2560,`
+SLS2x1
+*FvwmPagerGeometry +1225-1
+IconBox 1360 -64 -1 -1
+# Uncomment this if you prefer the toolbar on the left monitor
+#*IOStuffGeometry +1225+1
+*FvwmPagerLabel 0 Pager  Pager
+')
+
+#
+# ----------------------- Mouse & Keyboard Bindings ------------------------
+#
+#  This is the final section of your .fvwmrc.  It controls the keyboard
+#  and mouse actions that the window manager will use to pop up menus or
+#  perform other actions to your windows.  The defaults here are pretty
+#  Motif-compliant, except that Alt + mouse button anywhere on a window
+#  will be handled as if you have just clicked on the title bar, and
+#  Control+arrow keys moves the pager's virtual viewport around.  If
+#  these bindings are interfering with some of your applications, or if
+#  you are used to different behavior, you can change almost anything here.
+#
+#  To make changes, manually copy the file that's included below into
+#  this file and edit the key bindings you want to change.  To just
+#  override or supplement a few keys, try adding them after the include
+#  line.  In any case, see the included file and the fvwm man pages for
+#  help on the syntax.
+#
+#  The alternate .medm version gets included if you define SSO_MEDM to
+#  something and prevents fvwm from taking over keys that MEDM wants.
+
+m4_ifelse(m4_env(SSO_MEDM),`',`
+m4_include(`/usr/wm/common/system.fvwmrc.bindings')',`
+m4_include(`/usr/wm/common/system.fvwmrc.bindings.medm')')
+
+# End of .fvwmrc
