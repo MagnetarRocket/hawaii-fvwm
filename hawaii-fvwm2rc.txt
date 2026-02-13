@@ -38,7 +38,7 @@ m4_include(`/usr/wm/common/system.fvwmrc.icons')
 #  Warning: random pixmaps that didn't come from /usr/wm/common/pixmaps/
 #           can result in wasted colors and colormap problems!
 
-Icon "xconsole"	    monitor.xpm
+Style	"xconsole"	icon	    monitor.xpm
 
 #
 # -------------------------------- Styles -------------------------------
@@ -71,15 +71,15 @@ Style "xbiff"      NoTitle, NoHandles, Sticky, WindowListSkip
 #  (or /usr/openwin/lib/rgb.txt on the suns.)
 
 m4_ifelse(m4_env(SSO_COLORS),`',`
-HiForeColor 		#0000ffffffff
-HiBackColor 		#00002222bbbb
-StdForeColor 		#ffffffffffff
-StdBackColor 		#606070709090
-StickyForeColor		#ffffffffffff
-StickyBackColor		#00008b8b8b8b
-MenuBackColor		#00002222bbbb
-MenuForeColor		#0000ffffffff
-MenuStippleColor	#bbbbbbbbc8c8
+Style * HiForeColor 		#0000ffffffff
+Style * HiBackColor 		#00002222bbbb
+Style * StdForeColor 		#ffffffffffff
+Style * StdBackColor 		#606070709090
+Style * StickyForeColor		#ffffffffffff
+Style * StickyBackColor		#00008b8b8b8b
+Style * MenuBackColor		#00002222bbbb
+Style * MenuForeColor		#0000ffffffff
+Style * MenuStippleColor	#bbbbbbbbc8c8
 *FvwmPagerBack		#5e5e5e5e6464
 *FvwmPagerFore		#000000000000
 *FvwmPagerHilight	#00008b8b8b8b
@@ -241,70 +241,68 @@ EndFunction
 
 #  This is the menu you get when you click on the background
 
-Popup "XServers"
-	Title "Other X-Servers"
-m4_ifelse(m4_PLANES,`8',`',`
-  m4_ifelse(m4_env(`XBPP8'),`',`',`
-	Exec  "8-bit PseudoColor (best for saoimage)" exec chvt 8')')
-m4_ifelse(m4_PLANES,`16',`',`
-  m4_ifelse(m4_env(`XBPP16'),`',`',`
-	Exec  "16-bit TrueColor" exec chvt 9')')
-m4_ifelse(m4_env(`X_DEPTH'),`24',`',`
-  m4_ifelse(m4_env(`XBPP24'),`',`',`
-    m4_ifelse(m4_env(`XBPP32'),`',`
-	Exec  "24-bit TrueColor (best for movies)" exec chvt 9',`
-        Exec  "24-bit TrueColor (best for movies)" exec chvt 10')')')
-m4_ifelse(m4_env(`X_DEPTH'),`32',`',`
-    m4_ifelse(m4_env(`XBPP32'),`',`',`
-	Exec  "32-bit TrueColor (accelerated)" exec chvt 9')')
-EndPopup
+AddToMenu "XServers"
++	Title "Other X-Servers"
+#m4_ifelse(m4_PLANES,`8',`',`
+#  m4_ifelse(m4_env(`XBPP8'),`',`',`
+#	Exec  "8-bit PseudoColor (best for saoimage)" exec chvt 8')')
+# m4_ifelse(m4_PLANES,`16',`',`
+#  m4_ifelse(m4_env(`XBPP16'),`',`',`
+#	Exec  "16-bit TrueColor" exec chvt 9')')
+# m4_ifelse(m4_env(`X_DEPTH'),`24',`',`
+#  m4_ifelse(m4_env(`XBPP24'),`',`',`
+#    m4_ifelse(m4_env(`XBPP32'),`',`
+#	Exec  "24-bit TrueColor (best for movies)" exec chvt 9',`
+#        Exec  "24-bit TrueColor (best for movies)" exec chvt 10')')')
+# m4_ifelse(m4_env(`X_DEPTH'),`32',`',`
+#    m4_ifelse(m4_env(`XBPP32'),`',`',`
+#	Exec  "32-bit TrueColor (accelerated)" exec chvt 9')')
 
-Popup "PC_Card_Ops"
-	Title	"PC Card Options (PCMCIA cardctl)"
-	Nop	"Use the Eject option before manually"
-	Nop	"removing PC Cards (especially disk
-	Nop	"devices!)  You can also use Eject to"
-	Nop	"power down the PC Card slot without"
-	Nop	"physically ejecting the card.  This"
-	Nop	"is useful for changing media or saving"
-	Nop	"battery power."
-	Nop	" "
-	Exec	"Eject"		exec cardctl eject
-	Exec	"Insert" 	exec cardctl insert
-	Exec	"Suspend" 	exec cardctl suspend
-	Exec	"Resume"	exec cardctl resume
-EndPopup
 
-Popup "Wireless_Ops"
-	Title	"Wireless Options (WUSB11 ONLY)"
-	Nop	"This simply runs the wlan script,"
-	Nop	"/etc/rc.d/rc.wlan for you.  That"
-	Nop	"script only supports WUSB11 devices"
-	Nop	"at the moment.  This device is picky"
-	Nop	"about the way it gets started.  Note"
-	Nop	"that if running with usr.cramfs on"
-	Nop	"USB, re-starting WUSB11 may crash."
-	Nop	" "
-	Exec	"Start"		exec rxvt +sb -T wlan -n wlan -e /etc/rc.d/rc.wlan start
-	Exec	"Stop" 		exec rxvt +sb -T wlan -n wlan -e /etc/rc.d/rc.wlan stop
-EndPopup
+AddToMenu "PC_Card_Ops"
++	Title	"PC Card Options (PCMCIA cardctl)"
++	Nop	"Use the Eject option before manually"
++	Nop	"removing PC Cards (especially disk
++	Nop	"devices!)  You can also use Eject to"
++	Nop	"power down the PC Card slot without"
++	Nop	"physically ejecting the card.  This"
++	Nop	"is useful for changing media or saving"
++	Nop	"battery power."
++	Nop	" "
++	Exec	"Eject"		exec cardctl eject
++	Exec	"Insert" 	exec cardctl insert
++	Exec	"Suspend" 	exec cardctl suspend
++	Exec	"Resume"	exec cardctl resume
 
-Popup "Root Menu"
-	Title 	"Root Menu"
-	Exec    "Terminal"	exec myterm
-	Exec	"Virtual keyboard" exec xvkbd
-	Exec	"Audio Mixer"   exec xmmix
-	Popup	"PC Card Ops"	PC_Card_Ops
-        Popup   "Wireless Ops"  Wireless_Ops
+AddToMenu "Wireless_Ops"
++	Title	"Wireless Options (WUSB11 ONLY)"
++	Nop	"This simply runs the wlan script,"
++	Nop	"/etc/rc.d/rc.wlan for you.  That"
++	Nop	"script only supports WUSB11 devices"
++	Nop	"at the moment.  This device is picky"
++	Nop	"about the way it gets started.  Note"
++	Nop	"that if running with usr.cramfs on"
++	Nop	"USB, re-starting WUSB11 may crash."
++	Nop	" "
++	Exec	"Start"		exec rxvt +sb -T wlan -n wlan -e /etc/rc.d/rc.wlan start
++	Exec	"Stop" 		exec rxvt +sb -T wlan -n wlan -e /etc/rc.d/rc.wlan stop
+
+AddToMenu "Root Menu"
++	Title 	"Root Menu"
++	Exec    "Terminal"	exec myterm
++	Exec	"Virtual keyboard" exec xvkbd
++	Exec	"Audio Mixer"   exec xmmix
++	Popup	"PC Card Ops"	PC_Card_Ops
++	Popup   "Wireless Ops"  Wireless_Ops
 #	Popup	"Hosts"		CFHT_Hosts
-        Popup   "Applications"  CFHT_Applications
-	Popup	"Utilities"	CFHT_Utilities
++	Popup   "Applications"  CFHT_Applications
++	Popup	"Utilities"	CFHT_Utilities
 #	Popup	"Utilities (Sun)"	CFHT_Utilities_sun
-	Popup	"Window Ops"	CFHT_Window Ops2
-	Popup	"Desktop"	CFHT_Desktop
-	Popup   "Other X-Servers" XServers
-m4_ifelse(m4_env(SSO_PEGASUS),`',`',`
-        Popup   "Print"         CFHT_Print
++	Popup	"Window Ops"	CFHT_Window Ops2
++	Popup	"Desktop"	CFHT_Desktop
++	Popup   "Other X-Servers" XServers
+# m4_ifelse(m4_env(SSO_PEGASUS),`',`',`
+#         Popup   "Print"         CFHT_Print
         Popup   "Session Setup" Pegasus_Setup')
         Popup   "Exit" 	    	CFHT_Quit-Verify
         Exec    "Sidious reconfig" exec rxvt +sb -T reconfig -n reconfig -e su --command="reconfig" root
